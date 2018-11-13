@@ -4,12 +4,11 @@
       <span class="common-txt">
         Input dice to roll:
       </span>
-      <input
-        type="text"
+      <div
+        contenteditable
+        id="div-input"
         class="dice-input"
-        v-model="diceTextInput"
         @keyup="this.parseText"
-        placeholder="Roll me some dice!"
       />
     </div>
     <div class="range">
@@ -57,10 +56,41 @@ export default {
   methods: {
     // This is a very bad placeholder and should be removed immediately!
     parseText() {
+      const divEl = document.getElementById('div-input');
+      this.diceTextInput = divEl.textContent;
+      const spanned = this.constructSpans();
+      // colour individual letters
+      divEl.innerHTML = spanned;
+      if (spanned !== '') {
+        // set the cursor to the end of the input
+        // by default it goes to the start
+        this.setCaret();
+      }
+      console.log('parseText called. input is: ', this.diceTextInput, ' length: ', this.diceTextInput.length);
       const d = Number.parseInt(this.diceTextInput, 10);
       this.minRange = 1;
       this.maxRange = d;
       this.diceTextOutput = '25';
+    },
+    constructSpans() {
+      let spans = '';
+      const text = this.diceTextInput;
+      const myColors = ['#aaa', '#bbb', '#ccc', '#ddd'];
+
+      for (let i = 0; i < text.length; i += 1) {
+        spans += `<span ${i + 1 === text.length ? 'id="last-span"' : ''} style="background:${myColors[i % myColors.length]}">${text.charAt(i)}</span>`;
+      }
+      return spans;
+    },
+    setCaret() {
+      const el = document.getElementById('div-input');
+      const range = document.createRange();
+      const sel = window.getSelection();
+      range.setStart(el.childNodes[this.diceTextInput.length - 1], 1);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      el.focus();
     },
   },
 };
@@ -68,5 +98,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+.dice-input {
+  border: solid;
+  border-color: red;
+}
 </style>
