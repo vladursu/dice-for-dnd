@@ -42,6 +42,8 @@
 </template>
 
 <script>
+import { colours } from '../assets/strings';
+
 export default {
   name: 'DiceInput',
   data() {
@@ -75,10 +77,10 @@ export default {
     constructSpans() {
       let spans = '';
       const text = this.diceTextInput;
-      const myColors = ['#aaa', '#bbb', '#ccc', '#ddd'];
+      const myColors = [colours.d4, colours.d6, colours.d8, colours.d10, colours.d12, colours.d20];
 
       for (let i = 0; i < text.length; i += 1) {
-        spans += `<span ${i + 1 === text.length ? 'id="last-span"' : ''} style="background:${myColors[i % myColors.length]}">${text.charAt(i)}</span>`;
+        spans += `<span ${i + 1 === text.length ? 'id="last-span"' : ''} style="color:${myColors[i % myColors.length]}; font-weight: bold">${text.charAt(i)}</span>`;
       }
       return spans;
     },
